@@ -1,5 +1,5 @@
 # Simple PDF RAG
-
+![RAG App](App.png)
 ## Installation
 You need to install the better Python package manager **[uv](https://docs.astral.sh/uv/getting-started/installation/)** to run this app.
 You also need to install **[Ollama](https://ollama.com/download)**.

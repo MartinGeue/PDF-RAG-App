@@ -1,0 +1,643 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1">
+  <title>Dokumenten-Assistent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+  :root {
+    --font-size: clamp(12px, 2vw, 14px);
+    --padding: clamp(8px, 1.5vw, 12px);
+    --border-radius: clamp(8px, 1vw, 14px);
+    --container-padding: clamp(20px, 4vw, 32px);
+    --glow: 0 0 16px rgba(96, 165, 250, 0.25);
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --glass: rgba(10, 17, 40, 0.6);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(15, 25, 48, 0.7);
+    --glass-highlight: rgba(96, 165, 250, 0.1);
+    --code-bg: rgba(10, 17, 40, 0.8);
+    --code-border: 1px solid rgba(96, 165, 250, 0.2);
+    --accent: linear-gradient(135deg, #60a5fa, #6ee7b7);
+    --accent-hover: linear-gradient(135deg, #5da0f0, #5cd6b0);
+  }
+  body {
+    font-family: 'Manrope', 'Inter', system-ui;
+    background: linear-gradient(180deg, #020817 0%, #071022 100%);
+    color: #e6eef8;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    backdrop-filter: blur(4px);
+  }
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: var(--container-padding);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--border-radius);
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #042028;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: var(--glow);
+    transition: var(--transition);
+    backdrop-filter: blur(6px);
+    border: var(--glass-border);
+  }
+  .logo:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+  }
+  .header-text h1 {
+    font-size: calc(var(--font-size) + 6px);
+    font-weight: 700;
+    margin: 0;
+    color: #e6eef8;
+    background: linear-gradient(90deg, #e6eef8, #a7d8f0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header-text p {
+    font-size: calc(var(--font-size) - 1px);
+    color: #9aa4b2;
+    margin: 0;
+    font-weight: 400;
+  }
+  .upload-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    backdrop-filter: blur(4px);
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .input {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    border: var(--glass-border);
+    background: var(--glass);
+    color: #e6eef8;
+    font-size: var(--font-size);
+    resize: none;
+    min-height: 52px;
+    height: 52px;
+    transition: var(--transition);
+    backdrop-filter: blur(6px);
+  }
+  .input:focus {
+    outline: none;
+    border-color: rgba(96, 165, 250, 0.4);
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2), var(--glow);
+  }
+  button.primary {
+    background: var(--accent);
+    color: #042028;
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size);
+    white-space: nowrap;
+    height: 52px;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--glow);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+  }
+  button.primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(96, 165, 250, 0.3);
+  }
+  button.primary:active {
+    transform: translateY(0);
+  }
+  button.primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: 0.5s;
+  }
+  button.primary:hover::after {
+    left: 100%;
+  }
+  .chat-window {
+    background: var(--glass-bg);
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    flex: 1;
+    min-height: 200px;
+    max-height: 65vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: var(--glass-border);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 4px var(--glass-highlight);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(96, 165, 250, 0.5) transparent;
+  }
+  .chat-window::-webkit-scrollbar {
+    width: 8px;
+  }
+  .chat-window::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .chat-window::-webkit-scrollbar-thumb {
+    background-color: rgba(96, 165, 250, 0.5);
+    border-radius: 10px;
+    border: 2px solid transparent;
+  }
+  .chat-window::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(96, 165, 250, 0.8);
+  }
+  .message {
+    max-width: 90%;
+    padding: calc(var(--padding) + 2px);
+    border-radius: var(--border-radius);
+    margin: 6px 0;
+    font-size: var(--font-size);
+    line-height: 1.5;
+    word-break: break-word;
+    backdrop-filter: blur(4px);
+  }
+  .msg-user {
+    margin-left: auto;
+    background: linear-gradient(135deg, #0ea5a4, #07bba6);
+    color: #032020;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 12px rgba(7, 187, 166, 0.2);
+  }
+  .msg-bot {
+    margin-right: auto;
+    background: var(--glass);
+    border: var(--glass-border);
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 2px 8px var(--glass-highlight);
+  }
+  .msg-bot pre {
+    background: var(--code-bg);
+    padding: 14px;
+    border-radius: 8px;
+    border: var(--code-border);
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: calc(var(--font-size) - 1px);
+    backdrop-filter: blur(4px);
+  }
+  .msg-bot code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: var(--code-border);
+  }
+  .source {
+    font-size: calc(var(--font-size) - 2px);
+    color: #60a5fa;
+    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(96, 165, 250, 0.1);
+    border-left: 2px solid #60a5fa;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+    backdrop-filter: blur(4px);
+    display: inline-block;
+  }
+  .source:hover {
+    background: rgba(96, 165, 250, 0.2);
+  }
+  .source-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+  }
+  .source-popup.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .source-popup-content {
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    width: 80vmin;
+    max-width: 80vmin;
+    max-height: 80vmin;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(96, 165, 250, 0.5) transparent;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  .source-popup-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  .source-popup-content::-webkit-scrollbar-thumb {
+    background-color: rgba(96, 165, 250, 0.5);
+    border-radius: 10px;
+  }
+  .source-popup-content pre {
+    margin: 0;
+    font-size: calc(var(--font-size) - 1px);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: hidden;
+  }
+  .source-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #e6eef8;
+    font-size: 18px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .source-popup-close:hover {
+    color: #60a5fa;
+  }
+  .status {
+    font-size: calc(var(--font-size) - 1px);
+    color: #9aa4b2;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(4px);
+  }
+  .loader {
+    display: inline-flex;
+    width: 40px;
+    height: 16px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .loader div {
+    width: 8px;
+    height: 8px;
+    background-color: #60a5fa;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out;
+  }
+  .loader div:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  .loader div:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+  .filename {
+    font-size: calc(var(--font-size) - 1px);
+    color: #e6eef8;
+    margin-left: 12px;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(4px);
+  }
+  .filename i {
+    color: #6ee7b7;
+    font-size: calc(var(--font-size) + 2px);
+  }
+  @media (max-width: 600px) {
+    .container {
+      padding: 16px;
+    }
+    .message {
+      max-width: 95%;
+      padding: 10px 12px;
+    }
+    .chat-window {
+      padding: 12px;
+    }
+    .input, button.primary {
+      min-height: 48px;
+      height: 48px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+    }
+    .source-popup-content {
+      width: 90vmin;
+      max-width: 90vmin;
+      max-height: 90vmin;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo"><i class="fas fa-comments"></i></div>
+      <div class="header-text">
+        <h1>Dokumenten-Assistent</h1>
+        <p>Lade eine PDF hoch und stelle Fragen zu deinem Dokument.</p>
+      </div>
+    </div>
+
+    <div class="upload-row">
+      <form id="uform" enctype="multipart/form-data" onsubmit="return false;">
+        <input id="file" type="file" name="file" accept="application/pdf" style="display: none;" />
+        <button id="uploadBtn" class="primary" type="button" onclick="document.getElementById('file').click()">
+          <i class="fas fa-upload"></i> PDF auswählen
+        </button>
+        <div id="filenameDisplay" class="filename" style="display: none;">
+          <i class="fas fa-file-pdf"></i> <span id="filenameText"></span>
+        </div>
+      </form>
+      <div id="status" class="status" style="display: none;">
+        <i class="fas fa-circle"></i> <span id="stateText"></span>
+      </div>
+    </div>
+
+    <div id="chat" class="chat-window"></div>
+
+    <div class="controls">
+      <textarea id="q" class="input" rows="1" placeholder="Stelle eine Frage zu deinem Dokument..." oninput="autoGrow(this)" onkeydown="enterSend(event)"></textarea>
+      <button id="sendBtn" class="primary" onclick="ask()">
+        <i class="fas fa-paper-plane"></i> Senden
+      </button>
+    </div>
+  </div>
+
+  <div id="sourcePopup" class="source-popup">
+    <div class="source-popup-content">
+      <button class="source-popup-close" onclick="closeSourcePopup()"><i class="fas fa-times"></i></button>
+      <pre id="sourcePopupText"></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const chat = document.getElementById('chat');
+    const qEl = document.getElementById('q');
+    const sendBtn = document.getElementById('sendBtn');
+    const status = document.getElementById('stateText');
+    const statusIcon = document.querySelector('.status i');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const filenameDisplay = document.getElementById('filenameDisplay');
+    const filenameText = document.getElementById('filenameText');
+    const statusDisplay = document.getElementById('status');
+    const sourcePopup = document.getElementById('sourcePopup');
+    const sourcePopupText = document.getElementById('sourcePopupText');
+    let busy = false;
+    let serverState = "idle";
+
+    function autoGrow(el) {
+      el.style.height = 'auto';
+      el.style.height = (el.scrollHeight) + 'px';
+    }
+    function enterSend(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        ask();
+      }
+    }
+
+    function setBusy(v) {
+      busy = v;
+      qEl.disabled = v || serverState !== "ready";
+      sendBtn.disabled = v || serverState !== "ready";
+      uploadBtn.disabled = v || serverState === "ingesting";
+      sendBtn.innerHTML = v ? '<i class="fas fa-hourglass-half"></i> Bitte warten' : '<i class="fas fa-paper-plane"></i> Senden';
+    }
+
+    function updateStateText() {
+      status.textContent = {
+        idle: "",
+        uploading: "Hochladen…",
+        ingesting: "Verarbeite Dokument…",
+        ready: "Bereit für Fragen",
+        error: "Fehler"
+      }[serverState] || serverState;
+      statusIcon.className = {
+        idle: "fas fa-circle",
+        uploading: "fas fa-spinner fa-spin",
+        ingesting: "fas fa-spinner fa-spin",
+        ready: "fas fa-check-circle",
+        error: "fas fa-exclamation-triangle"
+      }[serverState] || "fas fa-circle";
+      statusIcon.style.color = {
+        idle: "#9aa4b2",
+        uploading: "#60a5fa",
+        ingesting: "#60a5fa",
+        ready: "#6ee7b7",
+        error: "#ff6b6b"
+      }[serverState] || "#9aa4b2";
+      statusDisplay.style.display = serverState === "idle" ? "none" : "flex";
+    }
+
+    function appendMessage(cls, text) {
+      const d = document.createElement('div');
+      d.className = 'message ' + cls;
+      d.innerHTML = marked.parse(text);
+      chat.appendChild(d);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function clearChat() {
+      chat.innerHTML = '';
+    }
+
+    function formatRetrievedText(text) {
+      return text
+        .replace(/<[^>]*>/g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/^\s+|\s+$/g, '')
+        .trim();
+    }
+
+    function openSourcePopup(text) {
+      sourcePopupText.textContent = text;
+      sourcePopup.classList.add('active');
+    }
+
+    function closeSourcePopup() {
+      sourcePopup.classList.remove('active');
+    }
+
+    async function pollState() {
+      try {
+        const res = await fetch('/ingest_state');
+        if (res.ok) {
+          const data = await res.json();
+          serverState = data.state || "idle";
+          updateStateText();
+          qEl.disabled = serverState !== "ready";
+          sendBtn.disabled = serverState !== "ready";
+          uploadBtn.disabled = serverState === "ingesting";
+          if (data.filename) {
+            filenameText.textContent = data.filename;
+            filenameDisplay.style.display = 'flex';
+            uploadBtn.style.display = 'none';
+          } else {
+            filenameDisplay.style.display = 'none';
+            uploadBtn.style.display = 'block';
+          }
+        }
+      } catch (e) {
+        console.log("poll error", e);
+      } finally {
+        setTimeout(pollState, 1500);
+      }
+    }
+
+    async function uploadPDF() {
+      const f = document.getElementById('file').files[0];
+      if (!f) return;
+      const fd = new FormData();
+      fd.append('file', f);
+      setBusy(true);
+      status.textContent = 'Hochladen…';
+      updateStateText();
+      try {
+        const res = await fetch('/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (res.ok) {
+          serverState = "uploading";
+          updateStateText();
+        } else {
+          serverState = "error";
+          updateStateText();
+          alert('Upload fehlgeschlagen: ' + (data.error || ''));
+        }
+      } catch (err) {
+        serverState = "error";
+        updateStateText();
+        alert('Fehler beim Upload');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function ask() {
+      if (busy || serverState !== "ready") return;
+      const text = qEl.value.trim();
+      if (!text) return;
+      appendMessage('msg-user', text);
+      qEl.value = '';
+      autoGrow(qEl);
+      setBusy(true);
+
+      const botMsg = document.createElement('div');
+      botMsg.className = 'message msg-bot';
+      botMsg.innerHTML = '<div class="loader"><div></div><div></div><div></div></div>';
+      chat.appendChild(botMsg);
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: text })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          let answer = data.answer;
+          let retrieved = data.retrieved ? formatRetrievedText(data.retrieved) : '';
+          if (retrieved) {
+            answer += `<br><br><div class="source" data-source="${encodeURIComponent(retrieved)}">Quelle anzeigen</div>`;
+          }
+          botMsg.innerHTML = marked.parse(answer);
+          // Event-Listener für alle .source-Elemente
+          document.querySelectorAll('.source').forEach(el => {
+            el.addEventListener('click', () => {
+              const source = decodeURIComponent(el.getAttribute('data-source'));
+              openSourcePopup(source);
+            });
+          });
+        } else {
+          botMsg.innerHTML = marked.parse('<strong>Fehler:</strong> ' + (data.answer || ''));
+        }
+      } catch (e) {
+        botMsg.innerHTML = marked.parse('<strong>Fehler beim Verbinden</strong>');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    window.openSourcePopup = openSourcePopup;
+    window.closeSourcePopup = closeSourcePopup;
+
+    pollState();
+    document.getElementById('file').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        uploadPDF();
+      }
+    });
+  </script>
+</body>
+</html>

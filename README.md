@@ -2,7 +2,7 @@
 
 ## Installation
 You need to install the better Python package manager **[uv](https://docs.astral.sh/uv/getting-started/installation/)** to run this app.
-You also need to install **[Ollama](https://ollama.com/download)**. (Tested with Ollama v0.1.3.4)
+You also need to install **[Ollama](https://ollama.com/download)**.
 
 ### Tested Versions
 - Ollama: v0.1.3.4 (other versions may work but have not been tested)

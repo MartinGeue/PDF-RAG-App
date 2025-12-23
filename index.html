@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1">
-  <title>Dokumenten-Assistent</title>
+  <title>Document Assistant</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -403,8 +403,8 @@
     <div class="header">
       <div class="logo"><i class="fas fa-comments"></i></div>
       <div class="header-text">
-        <h1>Dokumenten-Assistent</h1>
-        <p>Lade eine PDF hoch und stelle Fragen zu deinem Dokument.</p>
+        <h1>Document Assistant</h1>
+        <p>Upload a PDF and ask questions about your document.</p>
       </div>
     </div>
 
@@ -412,7 +412,7 @@
       <form id="uform" enctype="multipart/form-data" onsubmit="return false;">
         <input id="file" type="file" name="file" accept="application/pdf" style="display: none;" />
         <button id="uploadBtn" class="primary" type="button" onclick="document.getElementById('file').click()">
-          <i class="fas fa-upload"></i> PDF auswählen
+          <i class="fas fa-upload"></i> Choose PDF
         </button>
         <div id="filenameDisplay" class="filename" style="display: none;">
           <i class="fas fa-file-pdf"></i> <span id="filenameText"></span>
@@ -426,9 +426,9 @@
     <div id="chat" class="chat-window"></div>
 
     <div class="controls">
-      <textarea id="q" class="input" rows="1" placeholder="Stelle eine Frage zu deinem Dokument..." oninput="autoGrow(this)" onkeydown="enterSend(event)"></textarea>
+      <textarea id="q" class="input" rows="1" placeholder="Ask a question about your document..." oninput="autoGrow(this)" onkeydown="enterSend(event)"></textarea>
       <button id="sendBtn" class="primary" onclick="ask()">
-        <i class="fas fa-paper-plane"></i> Senden
+        <i class="fas fa-paper-plane"></i> Send
       </button>
     </div>
   </div>
@@ -472,7 +472,7 @@
       qEl.disabled = v || serverState !== "ready";
       sendBtn.disabled = v || serverState !== "ready";
       uploadBtn.disabled = v || serverState === "ingesting";
-      sendBtn.innerHTML = v ? '<i class="fas fa-hourglass-half"></i> Bitte warten' : '<i class="fas fa-paper-plane"></i> Senden';
+      sendBtn.innerHTML = v ? '<i class="fas fa-hourglass-half"></i> Please wait' : '<i class="fas fa-paper-plane"></i> Senden';
     }
 
     function updateStateText() {
@@ -609,7 +609,7 @@
           let answer = data.answer;
           let retrieved = data.retrieved ? formatRetrievedText(data.retrieved) : '';
           if (retrieved) {
-            answer += `<br><br><div class="source" data-source="${encodeURIComponent(retrieved)}">Quelle anzeigen</div>`;
+            answer += `<br><br><div class="source" data-source="${encodeURIComponent(retrieved)}">Show Source</div>`;
           }
           botMsg.innerHTML = marked.parse(answer);
           // Event-Listener für alle .source-Elemente

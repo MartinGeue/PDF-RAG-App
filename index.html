@@ -472,16 +472,16 @@
       qEl.disabled = v || serverState !== "ready";
       sendBtn.disabled = v || serverState !== "ready";
       uploadBtn.disabled = v || serverState === "ingesting";
-      sendBtn.innerHTML = v ? '<i class="fas fa-hourglass-half"></i> Please wait' : '<i class="fas fa-paper-plane"></i> Senden';
+      sendBtn.innerHTML = v ? '<i class="fas fa-hourglass-half"></i> Please wait' : '<i class="fas fa-paper-plane"></i> Send';
     }
 
     function updateStateText() {
       status.textContent = {
         idle: "",
-        uploading: "Hochladen…",
-        ingesting: "Verarbeite Dokument…",
-        ready: "Bereit für Fragen",
-        error: "Fehler"
+        uploading: "Uploading…",
+        ingesting: "Process document…",
+        ready: "Ready for questions",
+        error: "Error"
       }[serverState] || serverState;
       statusIcon.className = {
         idle: "fas fa-circle",

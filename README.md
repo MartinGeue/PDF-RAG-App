@@ -17,7 +17,7 @@ This project is provided as-is, without warranty. Use at your own risk.
 - **`ollama run ministral-3:3b`** (LLM for offline capability)
 - **`uv python install 3.13`** (required Python version)
 - **`uv init`** (inside project folder)
-- **`uv venv --python 3.13`**
+- **`uv venv --python 3.13`** (inside project folder)
 - **`uv pip install -r requirements.txt`** (inside project folder)
 - **`uv run main.py`** (inside project folder)
 
